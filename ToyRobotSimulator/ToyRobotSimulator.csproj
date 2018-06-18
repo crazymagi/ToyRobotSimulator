@@ -13,8 +13,6 @@
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.8.1" />
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.2.2" />
-    <PackageReference Include="FluentValidation" Version="7.6.103" />
-    <PackageReference Include="MediatR" Version="5.0.1" />
   </ItemGroup>
 
 </Project>
