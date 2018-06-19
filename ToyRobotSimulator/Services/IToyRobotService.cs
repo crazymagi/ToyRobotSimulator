@@ -8,6 +8,7 @@ namespace ToyRobotSimulator.Services
         Facing? GetFacing();
         void SetPlace(Position position, Facing facing);
         bool IsOnTable();
+        bool CanMove();
         void Move();
         void Turn(Direction direction);
     }

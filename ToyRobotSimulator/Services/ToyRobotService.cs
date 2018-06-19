@@ -44,9 +44,31 @@ namespace ToyRobotSimulator.Services
                    && _toyRobotContext.Position.X <= _tableTopSettings.MaxX;
         }
 
-        public void Move()
+        public bool CanMove()
         {
             if (!IsOnTable())
+            {
+                return false;
+            }
+
+            switch (_toyRobotContext.Facing.GetValueOrDefault())
+            {
+                case Facing.North:
+                    return _toyRobotContext.Position.Y < _tableTopSettings.MaxY;
+                case Facing.South:
+                    return _toyRobotContext.Position.Y > _tableTopSettings.MinY;
+                case Facing.East:
+                    return _toyRobotContext.Position.X < _tableTopSettings.MaxX;
+                case Facing.West:
+                    return _toyRobotContext.Position.X > _tableTopSettings.MinX;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        public void Move()
+        {
+            if (!CanMove())
             {
                 return;
             }
@@ -55,24 +77,16 @@ namespace ToyRobotSimulator.Services
                 switch (_toyRobotContext.Facing.Value)
                 {
                     case Facing.North:
-                        _toyRobotContext.Position.Y = _toyRobotContext.Position.Y == _tableTopSettings.MaxY
-                            ? _toyRobotContext.Position.Y
-                            : _toyRobotContext.Position.Y + 1;
+                        _toyRobotContext.Position.Y = _toyRobotContext.Position.Y + 1;
                         break;
                     case Facing.South:
-                        _toyRobotContext.Position.Y = _toyRobotContext.Position.Y == _tableTopSettings.MinY
-                            ? _toyRobotContext.Position.Y
-                            : _toyRobotContext.Position.Y - 1;
+                        _toyRobotContext.Position.Y = _toyRobotContext.Position.Y - 1;
                         break;
                     case Facing.East:
-                        _toyRobotContext.Position.X = _toyRobotContext.Position.X == _tableTopSettings.MaxX
-                            ? _toyRobotContext.Position.X
-                            : _toyRobotContext.Position.X + 1;
+                        _toyRobotContext.Position.X = _toyRobotContext.Position.X + 1;
                         break;
                     case Facing.West:
-                        _toyRobotContext.Position.X = _toyRobotContext.Position.X == _tableTopSettings.MinX
-                            ? _toyRobotContext.Position.X
-                            : _toyRobotContext.Position.X - 1;
+                        _toyRobotContext.Position.X = _toyRobotContext.Position.X - 1;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();

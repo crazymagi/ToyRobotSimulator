@@ -2,6 +2,5 @@
 {
     public class ReportCommand : ICommand
     {
-        public CommandType CommandType => CommandType.Report;
     }
 }

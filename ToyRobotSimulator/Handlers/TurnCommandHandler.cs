@@ -14,7 +14,8 @@ namespace ToyRobotSimulator.Handlers
 
         public void Handle(TurnCommand command)
         {
-            _toyRobotService.Turn(command.Direction);
+            if(_toyRobotService.IsOnTable())
+                _toyRobotService.Turn(command.Direction);
         }
     }
 }

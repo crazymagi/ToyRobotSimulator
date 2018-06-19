@@ -12,13 +12,13 @@ namespace ToyRobotSimulator.Helpers
             switch (originFacing)
             {
                 case Facing.North:
-                    return Facing.West;
-                case Facing.South:
                     return Facing.East;
+                case Facing.South:
+                    return Facing.West;
                 case Facing.East:
-                    return Facing.North;
-                case Facing.West:
                     return Facing.South;
+                case Facing.West:
+                    return Facing.North;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -29,13 +29,13 @@ namespace ToyRobotSimulator.Helpers
             switch (originFacing)
             {
                 case Facing.North:
-                    return Facing.East;
-                case Facing.South:
                     return Facing.West;
+                case Facing.South:
+                    return Facing.East;
                 case Facing.East:
-                    return Facing.South;
-                case Facing.West:
                     return Facing.North;
+                case Facing.West:
+                    return Facing.South;
                 default:
                     throw new ArgumentOutOfRangeException();
             }

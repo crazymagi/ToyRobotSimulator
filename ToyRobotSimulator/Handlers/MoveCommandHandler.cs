@@ -14,7 +14,8 @@ namespace ToyRobotSimulator.Handlers
 
         public void Handle(MoveCommand command)
         {
-            _toyRobotService.Move();
+            if(_toyRobotService.CanMove())
+                _toyRobotService.Move();
         }
     }
 }

@@ -8,6 +8,5 @@ namespace ToyRobotSimulator.Commands
 
         public Facing Facing { get; set; }
 
-        public CommandType CommandType => CommandType.Place;
     }
 }
