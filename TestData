@@ -1,0 +1,28 @@
+1:
+PLACE 0,0,NORTH
+MOVE
+REPORT
+Output: Position (0, 1), Facing North
+
+2:
+PLACE 0,0,NORTH
+LEFT
+REPORT
+Output: Position (0, 0), Facing West
+
+3:
+PLACE 1,2,EAST
+MOVE
+MOVE
+LEFT
+MOVE
+REPORT
+Outpt: Position (3, 3), Facing North
+
+4:
+Place 0,0,South
+Move
+Report
+Output: Position (0, 0), Facing South
+
+
