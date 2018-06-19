@@ -71,7 +71,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void ValidPositionAndFacingIsOnTable()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
             var actual = service.IsOnTable();
             Assert.IsTrue(actual);
@@ -80,7 +80,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void NullPositionIsNotOnTable()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             mockContext.Setup(mc => mc.Position).Returns((Position)null);
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
             var actual = service.IsOnTable();
@@ -90,7 +90,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void NullFacingIsNotOnTable()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             mockContext.Setup(mc => mc.Facing).Returns((Facing?)null);
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
             var actual = service.IsOnTable();
@@ -100,7 +100,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void InvalidPositionIsNotOnTable_SmallerThanMinX()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.X = mockSettings.Object.MinX - 1;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -111,7 +111,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void InvalidPositionIsNotOnTable_SmallerThanMinY()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.Y = mockSettings.Object.MinY - 1;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -122,7 +122,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void InvalidPositionIsNotOnTable_BiggerThanMaxX()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.X = mockSettings.Object.MaxX + 1;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -133,7 +133,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void InvalidPositionIsNotOnTable_BiggerThanMaxY()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.Y = mockSettings.Object.MaxY + 1;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -144,7 +144,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void ValidPositionIsOnTable_SameAsMinX()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.X = mockSettings.Object.MinX;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -155,7 +155,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void ValidPositionIsOnTable_SameAsMaxX()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.X = mockSettings.Object.MaxX;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -165,7 +165,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void ValidPositionIsOnTable_SameAsMinY()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.Y = mockSettings.Object.MinY;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -177,7 +177,7 @@ namespace ToyRobotSimulator.Test
         [TestMethod]
         public void ValidPositionIsOnTable_SameAsMaxY()
         {
-            GetContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
             var position = mockContext.Object.Position;
             position.Y = mockSettings.Object.MaxY;
             var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
@@ -186,10 +186,257 @@ namespace ToyRobotSimulator.Test
         }
         #endregion
 
+        #region Test CanMove Method
+        [TestMethod]
+        public void NotInTableCannotMove()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.X = mockSettings.Object.MinX - 1;  //Make IsOnTable return false
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsFalse(actual);
+        }
 
+        [TestMethod]
+        public void CannotMoveWhenFacingNorthAtNorthEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.Y = mockSettings.Object.MaxY;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.North);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsFalse(actual);
+        }
+
+        [TestMethod]
+        public void CannotMoveWhenFacingSouthAtSouthEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.Y = mockSettings.Object.MinY;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.South);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsFalse(actual);
+        }
+
+        [TestMethod]
+        public void CannotMoveWhenFacingEastAtEastEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.X = mockSettings.Object.MaxX;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.East);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsFalse(actual);
+        }
+
+        [TestMethod]
+        public void CannotMoveWhenFacingWestAtWestEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.X = mockSettings.Object.MinX;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.West);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsFalse(actual);
+        }
+
+        [TestMethod]
+        public void CanMoveWhenFacingNorthButNotAtNorthEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.Y = mockSettings.Object.MaxY - 1;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.North);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void CanMoveWhenFacingSouthButNotAtSouthEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.Y = mockSettings.Object.MinY + 1;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.South);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void CanMoveWhenFacingEastButNotAtEastEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.X = mockSettings.Object.MaxX - 1;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.East);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsTrue(actual);
+        }
+
+        [TestMethod]
+        public void CanMoveWhenFacingWestButNotAtWestEdge()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Object.Position.X = mockSettings.Object.MinX + 1;
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.West);
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            var actual = service.CanMove();
+            Assert.IsTrue(actual);
+        }
+        #endregion
+
+        #region Test Move Method
+        [TestMethod]
+        public void MoveNorthIncreaseOneOfY()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.North);
+            var expect = mockContext.Object.Position.Y + 1;
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            service.Move();
+            var actual = mockContext.Object.Position.Y;
+            Assert.AreEqual(expect,actual);
+        }
+
+        [TestMethod]
+        public void MoveSouthDecreaseOneOfY()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.South);
+            var expect = mockContext.Object.Position.Y - 1;
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            service.Move();
+            var actual = mockContext.Object.Position.Y;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void MoveEastIncreaseOneOfX()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.East);
+            var expect = mockContext.Object.Position.X + 1;
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            service.Move();
+            var actual = mockContext.Object.Position.X;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void MoveWestDecreaseOneOfX()
+        {
+            GetValidMockContextAndSettingWhichOnTable(out var mockContext, out var mockSettings);
+            mockContext.Setup(mc => mc.Facing).Returns(Facing.West);
+            var expect = mockContext.Object.Position.X - 1;
+            var service = new ToyRobotService(mockContext.Object, mockSettings.Object);
+            service.Move();
+            var actual = mockContext.Object.Position.X;
+            Assert.AreEqual(expect, actual);
+        }
+        #endregion
+
+        #region Test Turn Method
+        [TestMethod]
+        public void FromNorthTurnLeftShouldBeWest()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.North;
+            var expect = Facing.West;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Left);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void FromWestTurnLeftShouldBeSouth()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.West;
+            var expect = Facing.South;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Left);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void FromSouthTurnLeftShouldBeEast()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.South;
+            var expect = Facing.East;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Left);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void FromEastTurnLeftShouldBeNorth()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.East;
+            var expect = Facing.North;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Left);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void FromNorthTurnRightShouldBeEast()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.North;
+            var expect = Facing.East;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Right);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void FromEastTurnRightShouldBeSouth()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.East;
+            var expect = Facing.South;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Right);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void FromSouthTurnRightShouldBeWest()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.South;
+            var expect = Facing.West;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Right);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        [TestMethod]
+        public void FromWestTurnRightShouldBeNorth()
+        {
+            GetValidContextAndSettingWhichOnTable(out var context, out var settings);
+            context.Facing = Facing.West;
+            var expect = Facing.North;
+            var service = new ToyRobotService(context, settings);
+            service.Turn(Direction.Right);
+            var actual = context.Facing;
+            Assert.AreEqual(expect, actual);
+        }
+
+        #endregion
 
         #region Helper Methods
-        private void GetContextAndSettingWhichOnTable(out Mock<IToyRobotContext> mockContext,
+        private void GetValidMockContextAndSettingWhichOnTable(out Mock<IToyRobotContext> mockContext,
             out Mock<ITableTopSettings> mockSettings)
         {
             mockContext = new Mock<IToyRobotContext>();
@@ -197,10 +444,24 @@ namespace ToyRobotSimulator.Test
             var position = new Position() { X = 10, Y = 10 };
             mockContext.Setup(mc => mc.Position).Returns(position);
             mockContext.Setup(mc => mc.Facing).Returns(Facing.North);
-            mockSettings.Setup(ms => ms.MaxX).Returns(11);
-            mockSettings.Setup(ms => ms.MinX).Returns(9);
-            mockSettings.Setup(ms => ms.MaxY).Returns(11);
-            mockSettings.Setup(ms => ms.MinY).Returns(9);
+            mockSettings.Setup(ms => ms.MaxX).Returns(15);
+            mockSettings.Setup(ms => ms.MinX).Returns(5);
+            mockSettings.Setup(ms => ms.MaxY).Returns(15);
+            mockSettings.Setup(ms => ms.MinY).Returns(5);
+        }
+
+        private void GetValidContextAndSettingWhichOnTable(out ToyRobotContext context,
+            out TableTopSettings settings)
+        {
+            context = new ToyRobotContext();
+            settings = new TableTopSettings();
+            var position = new Position() { X = 10, Y = 10 };
+            context.Position = position;
+            context.Facing = Facing.North;
+            settings.MaxX = 15;
+            settings.MinX = 5;
+            settings.MaxY = 15;
+            settings.MinY = 5;
         }
 
 
